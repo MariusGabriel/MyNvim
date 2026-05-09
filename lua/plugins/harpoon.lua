@@ -37,5 +37,15 @@ return {
 		vim.keymap.set("n", "<C-S-N>", function()
 			harpoon:list():next()
 		end)
+
+		-- Elimină fișierul curent din listă (unpin)
+		vim.keymap.set("n", "<leader>hr", function()
+			harpoon:list():remove()
+		end, { desc = "Harpoon: remove file" })
+
+		-- Golește toată lista
+		vim.keymap.set("n", "<leader>hc", function()
+			harpoon:list():clear()
+		end, { desc = "Harpoon: clear all" })
 	end,
 }

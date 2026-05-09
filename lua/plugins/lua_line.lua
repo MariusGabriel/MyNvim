@@ -108,7 +108,32 @@ return {
 				},
 
 				lualine_b = { "branch", "diff", "diagnostics" },
-				lualine_c = { "filename" },
+				lualine_c = {
+					"filename",
+					{
+						function()
+							local ok, harpoon = pcall(require, "harpoon")
+							if not ok then return "" end
+							local list = harpoon:list()
+							if list:length() == 0 then return "" end
+							local current = vim.fn.fnamemodify(vim.fn.expand("%:p"), ":.")
+							local parts = {}
+							for i = 1, list:length() do
+								local item = list:get(i)
+								if item then
+									local name = vim.fn.fnamemodify(item.value, ":t")
+									if item.value == current then
+										table.insert(parts, string.format("[%d:%s]", i, name))
+									else
+										table.insert(parts, string.format("%d:%s", i, name))
+									end
+								end
+							end
+							return " " .. table.concat(parts, " | ")
+						end,
+						color = { fg = "#7aa2f7" },
+					},
+				},
 				lualine_x = {
 					{
 						require("noice").api.status.message.get_hl,
