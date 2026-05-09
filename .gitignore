@@ -1,0 +1,14 @@
+# Plugin data managed by lazy.nvim
+lazy-lock.json
+
+# Sensitive files
+lua/plugins/mytokengitlab.txt
+lua/plugins/test.txt
+lua/plugins/test.yml
+
+# Temp files
+lua/plugins/*.lua_temp
+lua/plugins/*_notyet
+
+# lush theme (submodule/clone)
+lush-template/
