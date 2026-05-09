@@ -794,6 +794,16 @@ return {
 			},
 		})
 
+		-- Patch get_state to guard against nil source_name (nui WinClosed race)
+		local manager = require("neo-tree.sources.manager")
+		local _orig_get_state = manager.get_state
+		manager.get_state = function(source_name, tabnr, winid)
+			if not source_name then
+				return nil
+			end
+			return _orig_get_state(source_name, tabnr, winid)
+		end
+
 		-- ─────────────────────────────────────────────
 		-- KEYMAPS GLOBALE
 		-- ─────────────────────────────────────────────
