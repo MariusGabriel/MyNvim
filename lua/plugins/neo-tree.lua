@@ -12,6 +12,19 @@ return {
 		local nesting = require("neotree-file-nesting-config")
 
 		-- ─────────────────────────────────────────────
+		-- SAFE REVEAL
+		-- ─────────────────────────────────────────────
+		local function safe_reveal()
+			local buftype = vim.bo.buftype
+			local bufname = vim.api.nvim_buf_get_name(0)
+			if buftype == "" and bufname ~= "" and vim.fn.filereadable(bufname) == 1 then
+				vim.cmd("Neotree reveal")
+			else
+				vim.cmd("Neotree show")
+			end
+		end
+
+		-- ─────────────────────────────────────────────
 		-- WORKSPACE MANAGEMENT
 		-- ─────────────────────────────────────────────
 		local workspaces = {}
@@ -341,7 +354,7 @@ return {
 				on_submit = function(value)
 					if value and value ~= "" then
 						filter_active = true
-						vim.cmd("Neotree reveal")
+						safe_reveal()
 						vim.schedule(function()
 							local state = require("neo-tree.sources.manager").get_state("filesystem")
 							if state then
@@ -431,7 +444,7 @@ return {
 				if choice:match("Toggle Explorer") then
 					vim.cmd("Neotree toggle")
 				elseif choice:match("Reveal Current") then
-					vim.cmd("Neotree reveal")
+					safe_reveal()
 				elseif choice:match("Fuzzy Search") then
 					fuzzy_search()
 				elseif choice:match("Open Terminal") then
@@ -786,7 +799,7 @@ return {
 		-- ─────────────────────────────────────────────
 		vim.keymap.set("n", "<leader>e", "<cmd>Neotree toggle<CR>", { desc = "Toggle explorer" })
 		vim.keymap.set("n", "<leader>E", "<cmd>Neotree close<CR>", { desc = "Close explorer" })
-		vim.keymap.set("n", "<leader>ef", "<cmd>Neotree reveal<CR>", { desc = "Reveal current file" })
+		vim.keymap.set("n", "<leader>ef", safe_reveal, { desc = "Reveal current file" })
 		vim.keymap.set("n", "<leader>eg", "<cmd>Neotree git_status<CR>", { desc = "Git status" })
 		vim.keymap.set("n", "<leader>eb", "<cmd>Neotree buffers<CR>", { desc = "Buffers" })
 		vim.keymap.set("n", "<leader>es", "<cmd>Neotree document_symbols<CR>", { desc = "Symbols" })
