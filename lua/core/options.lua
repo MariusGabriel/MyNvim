@@ -6,6 +6,19 @@ opt.showmode = true
 
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
+vim.g.loaded_perl_provider = 0
+
+vim.filetype.add({
+	filename = {
+		["docker-compose.yml"] = "yaml.docker-compose",
+		["docker-compose.yaml"] = "yaml.docker-compose",
+	},
+	pattern = {
+		["docker%-compose%..*%.ya?ml"] = "yaml.docker-compose",
+		[".*/%.gitlab%-ci%.ya?ml"] = "yaml.gitlab",
+		[".*helm.*values.*%.ya?ml"] = "yaml.helm-values",
+	},
+})
 
 ---vim.loader.enable
 vim.loader.enable()

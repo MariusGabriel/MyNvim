@@ -35,58 +35,110 @@ return {
 		-- ─────────────────────────────────────────────
 		require("bufferline").setup({
 			highlights = {
+				-- Selected: matrix green bg, white text
 				buffer_selected = {
-					fg = "#E5E9F0", -- alb
-					bg = "#D08F70", -- portocaliu
+					fg = "#ffffff",
+					bg = "#63c263",
 					bold = true,
 				},
+				-- Visible (split focus): lifted bg, sage text
 				buffer_visible = {
-					fg = "#6C7A96",
-					bg = "#3B4252", -- gri pentru cei vizibili
+					fg = "#8ab88a",
+					bg = "#111f11",
 				},
+				-- Inactive: dim on darkest bg
 				background = {
-					fg = "#646A76",
-					bg = "#2E3440", -- bg onenord
+					fg = "#4a6a4a",
+					bg = "#0a140a",
 				},
+				-- Indicator: green pill on green bg (blends nicely)
 				indicator_selected = {
-					fg = "#D08F70",
-					bg = "#D08F70",
+					fg = "#4aaa4a",
+					bg = "#63c263",
 				},
+				indicator_visible = {
+					fg = "#2a4a2a",
+					bg = "#111f11",
+				},
+				-- Modified dot: amber warning
 				modified = {
-					fg = "#EBCB8B",
-					bg = "#2E3440",
+					fg = "#c8a84a",
+					bg = "#0a140a",
 				},
 				modified_selected = {
-					fg = "#E5E9F0", -- alb
-					bg = "#D08F70",
+					fg = "#ffffff",
+					bg = "#63c263",
 				},
+				modified_visible = {
+					fg = "#c8a84a",
+					bg = "#111f11",
+				},
+				-- Close buttons
 				close_button = {
-					fg = "#646A76",
-					bg = "#2E3440",
+					fg = "#2a4a2a",
+					bg = "#0a140a",
 				},
 				close_button_selected = {
-					fg = "#E5E9F0", -- alb
-					bg = "#D08F70",
+					fg = "#ffffff",
+					bg = "#63c263",
 				},
-
+				close_button_visible = {
+					fg = "#3a5a3a",
+					bg = "#111f11",
+				},
+				-- Rounded capsule edges: fg = tab bg (draws the curve), bg = fill gutter
 				separator = {
-					fg = "#2E3440",
-					bg = "#2E3440",
+					fg = "#0a140a",
+					bg = "#060e06",
 				},
 				separator_selected = {
-					fg = "#2E3440",
-					bg = "#D08F70",
+					fg = "#63c263",
+					bg = "#060e06",
 				},
 				separator_visible = {
-					fg = "#2E3440",
-					bg = "#2E3440",
+					fg = "#111f11",
+					bg = "#060e06",
+				},
+				-- Tabs
+				tab = {
+					fg = "#4a6a4a",
+					bg = "#0a140a",
 				},
 				tab_selected = {
-					fg = "#2E3440",
-					bg = "#D08F70",
+					fg = "#0a1a0a",
+					bg = "#63c263",
+					bold = true,
 				},
+				tab_close = {
+					fg = "#4a6a4a",
+					bg = "#0a140a",
+				},
+				-- Duplicate prefix: italic + dim (like @comment)
+				duplicate = {
+					fg = "#2a4a2a",
+					bg = "#0a140a",
+					italic = true,
+				},
+				duplicate_selected = {
+					fg = "#0a1a0a",
+					bg = "#7ec8a0",
+					italic = true,
+				},
+				duplicate_visible = {
+					fg = "#3a5a3a",
+					bg = "#111f11",
+					italic = true,
+				},
+				-- Diagnostics (matches DiagnosticVirtualText* palette)
+				error = { fg = "#c86a5a", bg = "#0a140a" },
+				error_selected = { fg = "#7a1a0a", bg = "#7ec8a0", bold = true },
+				error_visible = { fg = "#a85a4a", bg = "#111f11" },
+				warning = { fg = "#c8a84a", bg = "#0a140a" },
+				warning_selected = { fg = "#3a2a00", bg = "#7ec8a0", bold = true },
+				warning_visible = { fg = "#a8884a", bg = "#111f11" },
+				-- Fill: darkest layer — the empty tabline gutter
 				fill = {
-					bg = "#2E3440",
+					bg = "#060e06",
 				},
 			},
 			options = {
@@ -121,7 +173,7 @@ return {
 				-- Nume buffer
 				name_formatter = function(buf)
 					local name = buf.name
-					local pinned = pinned_buffers[buf.bufnr] and "📌 " or ""
+					local pinned = pinned_buffers[buf.bufnr] and " " or ""
 					local modified = vim.bo[buf.bufnr].modified and "● " or ""
 					return pinned .. modified .. name
 				end,
@@ -154,12 +206,8 @@ return {
 					},
 				},
 
-				-- Separator rotunjit
-				separator_style = "padded_slant",
-
-				-- separator_style = "slant" | "slope" | "thick" | "thin" | { 'any', 'any' },
-				-- separator_style = "",
-				-- separator_style = "any", -- Setări generale
+				-- Separator rotunjit (capsulă, la fel ca lualine)
+				separator_style = { "", "" },
 				always_show_bufferline = true,
 				auto_toggle_bufferline = true,
 				show_buffer_icons = true,

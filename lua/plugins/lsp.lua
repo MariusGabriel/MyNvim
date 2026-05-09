@@ -98,6 +98,14 @@ return {
 				--  For example, in C this would take you to the header.
 				map("gD", vim.lsp.buf.declaration, "[G]oto [D]eclaration")
 
+				map("K", function()
+					vim.lsp.buf.hover({ border = "rounded" })
+				end, "Hover Documentation")
+
+				map("<C-k>", function()
+					vim.lsp.buf.signature_help({ border = "rounded" })
+				end, "Signature Help", "i")
+
 				-- This function resolves a difference between neovim nightly (version 0.11) and stable (version 0.10)
 				---@param client vim.lsp.Client
 				---@param method vim.lsp.protocol.Method
@@ -166,6 +174,17 @@ return {
 				end
 			end,
 		})
+
+		-- Override hover/signature handlers cu border rounded (fara vim.lsp.with)
+		local _hover = vim.lsp.handlers["textDocument/hover"]
+		vim.lsp.handlers["textDocument/hover"] = function(err, result, ctx, config)
+			_hover(err, result, ctx, vim.tbl_deep_extend("force", config or {}, { border = "rounded" }))
+		end
+
+		local _sig = vim.lsp.handlers["textDocument/signatureHelp"]
+		vim.lsp.handlers["textDocument/signatureHelp"] = function(err, result, ctx, config)
+			_sig(err, result, ctx, vim.tbl_deep_extend("force", config or {}, { border = "rounded" }))
+		end
 
 		-- Diagnostic Config
 		-- See :help vim.diagnostic.Opts
@@ -275,7 +294,17 @@ return {
 					},
 				},
 			},
-			lua_ls = {},
+			lua_ls = {
+					settings = {
+						Lua = {
+							diagnostics = { globals = { "vim" } },
+							workspace = {
+								library = vim.api.nvim_get_runtime_file("", true),
+								checkThirdParty = false,
+							},
+						},
+					},
+				},
 			-- jdtls is handled by nvim-java (ftplugin/java.lua), not here
 		}
 

@@ -2,15 +2,74 @@ return {
 
 	"nvim-lualine/lualine.nvim",
 
-	dependencies = { "nvim-tree/nvim-web-devicons", "tamton-aquib/keys.nvim" },
+	dependencies = { "nvim-tree/nvim-web-devicons" },
 
 	config = function()
+		local warm_matrix = {
+			normal = {
+				a = { fg = "#0d1a0d", bg = "#6bc87a", gui = "bold" },
+				b = { fg = "#b8cca8", bg = "NONE" },
+				c = { fg = "#d8c9a3", bg = "NONE" },
+			},
+			insert = {
+				a = { fg = "#0d1a0d", bg = "#e8c46a", gui = "bold" },
+				b = { fg = "#b8cca8", bg = "NONE" },
+				c = { fg = "#d8c9a3", bg = "NONE" },
+			},
+			visual = {
+				a = { fg = "#0d1a0d", bg = "#b07fd4", gui = "bold" },
+				b = { fg = "#b8cca8", bg = "NONE" },
+				c = { fg = "#d8c9a3", bg = "NONE" },
+			},
+			replace = {
+				a = { fg = "#0d1a0d", bg = "#c86a5a", gui = "bold" },
+				b = { fg = "#b8cca8", bg = "NONE" },
+				c = { fg = "#d8c9a3", bg = "NONE" },
+			},
+			command = {
+				a = { fg = "#0d1a0d", bg = "#7db5c8", gui = "bold" },
+				b = { fg = "#b8cca8", bg = "NONE" },
+				c = { fg = "#d8c9a3", bg = "NONE" },
+			},
+			inactive = {
+				a = { fg = "#4a5a4a", bg = "NONE" },
+				b = { fg = "#4a5a4a", bg = "NONE" },
+				c = { fg = "#4a5a4a", bg = "NONE" },
+			},
+		}
+
+		local function get_mode_color()
+			local mode_colors = {
+				n = "#6bc87a",
+				i = "#e8c46a",
+				v = "#b07fd4",
+				V = "#b07fd4",
+				["\22"] = "#b07fd4",
+				R = "#c86a5a",
+				c = "#7db5c8",
+			}
+			return mode_colors[vim.fn.mode()] or "#6bc87a"
+		end
+
+		local function get_right_color()
+			local right_colors = {
+				n = "#6bc87a",
+				i = "#e8c46a",
+				v = "#b07fd4",
+				V = "#b07fd4",
+				["\22"] = "#b07fd4",
+				R = "#c86a5a",
+				c = "#7db5c8",
+			}
+			return right_colors[vim.fn.mode()] or "#6bc87a"
+		end
+
 		require("lualine").setup({
 			options = {
 				icons_enabled = true,
-				theme = "wombat",
-				component_separators = { left = "", right = "" },
-				-- section_separators = { left = "", right = "" },
+				theme = warm_matrix,
+				component_separators = { left = "│", right = "│" },
+				section_separators = { left = "│", right = "│" },
 				disabled_filetypes = {
 					statusline = {},
 					winbar = {},
@@ -27,87 +86,57 @@ return {
 
 			sections = {
 				lualine_a = {
-
+					{
+						function()
+							return "╰"
+						end,
+						color = { fg = "#4a5a4a", bg = "NONE" },
+						padding = 0,
+						separator = { left = "", right = "" },
+					},
+					{
+						function()
+							return ""
+						end,
+						color = function()
+							return { fg = get_mode_color(), bg = "NONE" }
+						end,
+						padding = 0,
+						separator = { left = "", right = "" },
+					},
 					{
 						"mode",
-						icons_enabled = true, -- Enables the display of icons alongside the component.
-						-- Defines the icon to be displayed in front of the component.
-						-- Can be string|table
-						-- As table it must contain the icon as first entry and can use
-						-- color option to custom color the icon. Example:
-						-- {'branch', icon = ''} / {'branch', icon = {'', color={fg='green'}}}
-
-						-- icon position can also be set to the right side from table. Example:
-						-- {'branch', icon = {'', align='right', color={fg='green'}}}
-						icon = nil,
-
-						separator = nil, -- Determines what separator to use for the component.
-						-- Note:
-						--  When a string is provided it's treated as component_separator.
-						--  When a table is provided it's treated as section_separator.
-						--  Passing an empty string disables the separator.
-						--
-						-- These options can be used to set colored separators
-						-- around a component.
-						--
-						-- The options need to be set as such:
-						--   separator = { left = '', right = ''}
-						--
-						-- Where left will be placed on left side of component,
-						-- and right will be placed on its right.
-						--
-
-						cond = nil, -- Condition function, the component is loaded when the function returns `true`.
-
-						draw_empty = false, -- Whether to draw component even if it's empty.
-						-- Might be useful if you want just the separator.
-
-						-- Defines a custom color for the component:
-						-- 'highlight_group_name' | { fg = '#rrggbb'|cterm_value(0-255)|'color_name(red)', bg= '#rrggbb', gui='style' } | function
-						-- Note:
-						--  '|' is synonymous with 'or', meaning a different acceptable format for that placeholder.
-						-- color function has to return one of other color types ('highlight_group_name' | { fg = '#rrggbb'|cterm_value(0-255)|'color_name(red)', bg= '#rrggbb', gui='style' })
-						-- color functions can be used to have different colors based on state as shown below.
-						--
-						-- Examples:
-						--   color = { fg = '#ffaa88', bg = 'grey', gui='italic,bold' },
-						--   color = { fg = 204 }   -- When fg/bg are omitted, they default to the your theme's fg/bg.
-						--   color = 'WarningMsg'   -- Highlight groups can also be used.
-						--   color = function(section)
-						--      return { fg = vim.bo.modified and '#aa3355' or '#33aa88' }
-						--   end,
-						color = nil, -- The default is your theme's color for that section and mode.
-
-						-- Specify what type a component is, if omitted, lualine will guess it for you.
-						--
-						-- Available types are:
-						--   [format: type_name(example)], mod(branch/filename),
-						--   stl(%f/%m), var(g:coc_status/bo:modifiable),
-						--   lua_expr(lua expressions), vim_fun(viml function name)
-						--
-						-- Note:
-						-- lua_expr is short for lua-expression and vim_fun is short for vim-function.
-						type = nil,
-
-						padding = 1, -- Adds padding to the left and right of components.
-						-- Padding can be specified to left or right independently, e.g.:
-						--   padding = { left = left_padding, right = right_padding }
-
-						fmt = nil, -- Format function, formats the component's output.
-						-- This function receives two arguments:
-						-- - string that is going to be displayed and
-						--   that can be changed, enhanced and etc.
-						-- - context object with information you might
-						--   need. E.g. tabnr if used with tabs.
-						on_click = nil, -- takes a function that is called when component is clicked with mouse.
-						-- the function receives several arguments
-						-- - number of clicks in case of multiple clicks
-						-- - mouse button used (l(left)/r(right)/m(middle)/...)
-						-- - modifiers pressed (s(shift)/c(ctrl)/a(alt)/m(meta)...)
+						color = function()
+							return { fg = "#0d1a0d", bg = get_mode_color(), gui = "bold" }
+						end,
+						padding = { left = 1, right = 1 },
+						separator = { left = "", right = "" },
+					},
+					{
+						function()
+							return ""
+						end,
+						color = function()
+							return { fg = get_mode_color(), bg = "NONE" }
+						end,
+						padding = 0,
+						separator = { left = "", right = "" },
 					},
 				},
 
-				lualine_b = { "branch", "diff", "diagnostics" },
+				lualine_b = {
+					{
+						function()
+							return "│"
+						end,
+						color = { fg = "#6bc87a" },
+						padding = { left = 1, right = 1 },
+						separator = { left = "", right = "" },
+					},
+					"branch",
+					"diff",
+					"diagnostics",
+				},
 				lualine_c = {
 					"filename",
 					{
@@ -115,23 +144,32 @@ return {
 							local ok, harpoon = pcall(require, "harpoon")
 							if not ok then return "" end
 							local list = harpoon:list()
-							if list:length() == 0 then return "" end
-							local current = vim.fn.fnamemodify(vim.fn.expand("%:p"), ":.")
+							local len = list:length()
+							if len == 0 then return "" end
+
+							local bufnr = vim.api.nvim_get_current_buf()
+							local cache = vim.b[bufnr]._harpoon_lualine
+							if cache then return cache end
+
+							local current = vim.loop.fs_realpath(vim.api.nvim_buf_get_name(bufnr)) or ""
 							local parts = {}
-							for i = 1, list:length() do
+							for i = 1, len do
 								local item = list:get(i)
 								if item then
-									local name = vim.fn.fnamemodify(item.value, ":t")
-									if item.value == current then
-										table.insert(parts, string.format("[%d:%s]", i, name))
+									local full = vim.loop.fs_realpath(item.value) or item.value
+									local name = item.value:match("([^/]+)$") or item.value
+									if full == current then
+										table.insert(parts, ("[%d:%s]"):format(i, name))
 									else
-										table.insert(parts, string.format("%d:%s", i, name))
+										table.insert(parts, ("%d:%s"):format(i, name))
 									end
 								end
 							end
-							return " " .. table.concat(parts, " | ")
+							local result = #parts > 0 and (" " .. table.concat(parts, " | ")) or ""
+							vim.b[bufnr]._harpoon_lualine = result
+							return result
 						end,
-						color = { fg = "#7aa2f7" },
+						color = { fg = "#b8cca8" },
 					},
 				},
 				lualine_x = {
@@ -140,20 +178,23 @@ return {
 						cond = require("noice").api.status.message.has,
 					},
 					{
-						require("noice").api.status.command.get,
-
-						cond = require("noice").api.status.command.has,
-						color = { fg = "#f5ee2c" },
+						function()
+							return require("screenkey").get_keys()
+						end,
+						cond = function()
+							return vim.g.screenkey_statusline_component == true
+						end,
+						color = { fg = "#e8c46a" },
 					},
 					{
 						require("noice").api.status.mode.get,
 						cond = require("noice").api.status.mode.has,
-						color = { fg = "#ff9e64" },
+						color = { fg = "#c8956c" },
 					},
 					{
 						require("noice").api.status.search.get,
 						cond = require("noice").api.status.search.has,
-						color = { fg = "#ff9e64" },
+						color = { fg = "#c8956c" },
 					},
 
 					"encoding",
@@ -161,16 +202,72 @@ return {
 					"filetype",
 				},
 				-- lualine_x = { "encoding", "fileformat", "filetype" },
-				lualine_y = { "progress" },
-				lualine_z = {
-					"location",
+				lualine_y = {
 					{
-
-						"datetime",
-						-- options: default, us, uk, iso, or your own format string ("%H:%M", etc..)
-						style = "%H:%M %y%m%d",
-
-						-- right = "",
+						function()
+							return ""
+						end,
+						color = function()
+							return { fg = get_right_color(), bg = "NONE" }
+						end,
+						padding = 0,
+						separator = { left = "", right = "" },
+					},
+					{
+						"progress",
+						color = function()
+							return { fg = "#0d1a0d", bg = get_right_color(), gui = "bold" }
+						end,
+						padding = { left = 1, right = 1 },
+						separator = { left = "", right = "" },
+					},
+					{
+						function()
+							return ""
+						end,
+						color = function()
+							return { fg = get_right_color(), bg = "NONE" }
+						end,
+						padding = 0,
+						separator = { left = "", right = "" },
+					},
+				},
+				lualine_z = {
+					{
+						function()
+							return ""
+						end,
+						color = function()
+							return { fg = get_right_color(), bg = "NONE" }
+						end,
+						padding = 0,
+						separator = { left = "", right = "" },
+					},
+					{
+						"location",
+						color = function()
+							return { fg = "#0d1a0d", bg = get_right_color(), gui = "bold" }
+						end,
+						padding = { left = 1, right = 1 },
+						separator = { left = "", right = "" },
+					},
+					{
+						function()
+							return ""
+						end,
+						color = function()
+							return { fg = get_right_color(), bg = "NONE" }
+						end,
+						padding = 0,
+						separator = { left = "", right = "" },
+					},
+					{
+						function()
+							return "╯"
+						end,
+						color = { fg = "#4a5a4a", bg = "NONE" },
+						padding = 0,
+						separator = { left = "", right = "" },
 					},
 				},
 			},
@@ -186,6 +283,13 @@ return {
 			winbar = {},
 			inactive_winbar = {},
 			extensions = {},
+		})
+
+		-- Invalidate harpoon lualine cache on buffer entry so position updates
+		vim.api.nvim_create_autocmd("BufEnter", {
+			callback = function(ev)
+				vim.b[ev.buf]._harpoon_lualine = nil
+			end,
 		})
 	end,
 }

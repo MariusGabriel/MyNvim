@@ -22,7 +22,12 @@ keymap.set("n", "<leader>nh", ":nohl<CR>", { desc = "Clear search highlights" })
 
 -- delete single character without copying into register
 -- keymap.set("n", "x", '"_x')
-keymap.set("x", "p", 'p:let @+=@0<CR>:let @"=@0<CR>', { desc = "Move up" })
+keymap.set("x", "p", function()
+	if not vim.bo.modifiable then return end
+	vim.cmd('normal! p')
+	vim.fn.setreg("+", vim.fn.getreg("0"))
+	vim.fn.setreg('"', vim.fn.getreg("0"))
+end, { desc = "Paste without overwriting yank register" })
 
 keymap.set(
 	"t",
@@ -33,7 +38,6 @@ keymap.set(
 
 keymap.set("t", "<Esc><Esc>", "<C-\\><C-n>", { desc = "Exit terminal mode" })
 
-keymap.set("n", "<Tab>t", "<cmd>BufferLineTogglePin<CR>", { desc = "Pin the tab" })
 
 -- keymap.set("n", "<Tab>", "<cmd>BufferLineCycleNext<CR>", { desc = "Move the next Tab" })
 

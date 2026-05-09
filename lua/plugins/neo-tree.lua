@@ -7,6 +7,7 @@ return {
 		"MunifTanjim/nui.nvim",
 		"saifulapm/neotree-file-nesting-config",
 		"stevearc/dressing.nvim",
+		"esmuellert/codediff.nvim",
 	},
 	config = function()
 		local nesting = require("neotree-file-nesting-config")
@@ -188,8 +189,7 @@ return {
 			if dest ~= "" and dest ~= node.path then
 				vim.notify("📋 Se copiază: " .. vim.fn.fnamemodify(node.path, ":t"), vim.log.levels.INFO)
 				vim.schedule(function()
-					local cmd = string.format("!cp -r %s %s", vim.fn.shellescape(node.path), vim.fn.shellescape(dest))
-					vim.cmd(cmd)
+					vim.fn.system(string.format("cp -r %s %s", vim.fn.shellescape(node.path), vim.fn.shellescape(dest)))
 					require("neo-tree.command").execute({ action = "refresh" })
 					vim.notify("✅ Copiat cu succes!", vim.log.levels.INFO)
 				end)
@@ -208,8 +208,7 @@ return {
 			if dest ~= "" and dest ~= node.path then
 				vim.notify("🚚 Se mută: " .. vim.fn.fnamemodify(node.path, ":t"), vim.log.levels.INFO)
 				vim.schedule(function()
-					local cmd = string.format("!mv %s %s", vim.fn.shellescape(node.path), vim.fn.shellescape(dest))
-					vim.cmd(cmd)
+					vim.fn.system(string.format("mv %s %s", vim.fn.shellescape(node.path), vim.fn.shellescape(dest)))
 					require("neo-tree.command").execute({ action = "refresh" })
 					vim.notify("✅ Mutat cu succes!", vim.log.levels.INFO)
 				end)
@@ -238,32 +237,29 @@ return {
 			local state = require("neo-tree.sources.manager").get_state("filesystem")
 			local node = state and state.tree:get_node()
 			if node and node.type == "file" then
-				local float = vim.api.nvim_open_win(0, true, {
-					relative = "editor",
-					width = 80,
-					height = 30,
-					row = 5,
-					col = 10,
-					style = "minimal",
-					border = "rounded",
-				})
-				local buf = vim.api.nvim_create_buf(false, true)
-				vim.api.nvim_win_set_buf(float, buf)
-
-				local cmd = string.format("git diff HEAD -- %s 2>/dev/null", vim.fn.shellescape(node.path))
-				local output = vim.fn.system(cmd)
-				if output == "" then
-					output = "Nicio diferență față de HEAD"
-				end
-				vim.api.nvim_buf_set_lines(buf, 0, -1, false, vim.split(output, "\n"))
-				vim.bo[buf].filetype = "diff"
-				vim.keymap.set("n", "q", function()
-					vim.api.nvim_win_close(float, true)
-				end, { buffer = buf })
-				vim.keymap.set("n", "<esc>", function()
-					vim.api.nvim_win_close(float, true)
-				end, { buffer = buf })
+				vim.cmd("tabnew " .. vim.fn.fnameescape(node.path))
+				vim.cmd("CodeDiff file HEAD")
 			end
+		end
+
+		local function git_diff_revision()
+			local state = require("neo-tree.sources.manager").get_state("filesystem")
+			local node = state and state.tree:get_node()
+			if node and node.type == "file" then
+				local rev = vim.fn.input("Compare vs (HEAD, branch, hash): ", "HEAD")
+				if rev ~= "" then
+					vim.cmd("tabnew " .. vim.fn.fnameescape(node.path))
+					vim.cmd("CodeDiff file " .. rev)
+				end
+			end
+		end
+
+		local function git_history()
+			vim.cmd("CodeDiff history")
+		end
+
+		local function codediff_status()
+			vim.cmd("CodeDiff")
 		end
 
 		-- ─────────────────────────────────────────────
@@ -405,13 +401,13 @@ return {
 				)
 			else
 				local file2 = node.path
-				vim.cmd("tabnew")
-				vim.cmd("edit " .. vim.fn.fnameescape(diff_state.file1))
-				vim.cmd("diffthis")
-				vim.cmd("vsplit " .. vim.fn.fnameescape(file2))
-				vim.cmd("diffthis")
+				vim.cmd(string.format(
+					"CodeDiff file %s %s",
+					vim.fn.fnameescape(diff_state.file1),
+					vim.fn.fnameescape(file2)
+				))
 				diff_state.file1 = nil
-				vim.notify("✅ Diff activ! Folosește [c și ]c", vim.log.levels.INFO)
+				vim.notify("✅ CodeDiff activ! Folosește ]c și [c", vim.log.levels.INFO)
 			end
 		end
 
@@ -430,7 +426,10 @@ return {
 				"📂 Load Workspace",
 				"⚡ Add Quick Mark",
 				"🔄 Git Blame",
-				"📊 Git Diff Preview",
+				"📊 Git Diff vs HEAD",
+				"🕐 Git Diff vs Revision",
+				"📜 Git History",
+				"🔀 CodeDiff Status",
 				"🎨 Toggle Hidden Files",
 				"🧹 Clear Filter",
 				"⬆️ Navigate to Parent",
@@ -473,8 +472,14 @@ return {
 					add_quick_mark()
 				elseif choice:match("Git Blame") then
 					git_blame()
-				elseif choice:match("Git Diff") then
+				elseif choice:match("Git Diff vs HEAD") then
 					git_diff_preview()
+				elseif choice:match("Git Diff vs Revision") then
+					git_diff_revision()
+				elseif choice:match("Git History") then
+					git_history()
+				elseif choice:match("CodeDiff Status") then
+					codediff_status()
 				elseif choice:match("Toggle Hidden") then
 					vim.cmd("Neotree toggle_hidden")
 				elseif choice:match("Clear Filter") then
@@ -484,6 +489,22 @@ return {
 				end
 			end)
 		end
+
+		-- ─────────────────────────────────────────────
+		-- CODEDIFF SETUP
+		-- ─────────────────────────────────────────────
+		require("codediff").setup({
+			diff = {
+				layout = "side-by-side",
+				jump_to_first_change = true,
+				compute_moves = true,
+			},
+			explorer = {
+				position = "left",
+				width = 40,
+				view_mode = "tree",
+			},
+		})
 
 		-- ─────────────────────────────────────────────
 		-- NEO-TREE SETUP (CU SĂGEȚI ȘI LINII)
@@ -570,7 +591,14 @@ return {
 				width = 40,
 				mapping_options = { noremap = true, nowait = true },
 				mappings = {
-					["<space>"] = { "toggle_node", nowait = false },
+					["<space>"] = {
+						function(state)
+							if state and state.tree then
+								require("neo-tree.sources.common.commands").toggle_node(state)
+							end
+						end,
+						nowait = false,
+					},
 					["<2-LeftMouse>"] = "open",
 
 					-- SĂGEȚI PENTRU NAVIGARE
@@ -603,7 +631,6 @@ return {
 					end,
 					["<leader>D"] = function()
 						diff_state.file1 = nil
-						vim.cmd("windo diffoff")
 						vim.notify("Diff resetat", vim.log.levels.INFO)
 					end,
 
@@ -649,6 +676,15 @@ return {
 					end,
 					["<leader>gd"] = function()
 						git_diff_preview()
+					end,
+					["<leader>gr"] = function()
+						git_diff_revision()
+					end,
+					["<leader>gh"] = function()
+						git_history()
+					end,
+					["<leader>gS"] = function()
+						codediff_status()
 					end,
 
 					-- Terminal
@@ -820,6 +856,17 @@ return {
 			show_quick_menu()
 		end, { desc = "NeoTree Menu" })
 
+		-- CodeDiff global keymaps
+		vim.keymap.set("n", "<leader>gd", "<cmd>CodeDiff file HEAD<CR>", { desc = "CodeDiff vs HEAD" })
+		vim.keymap.set("n", "<leader>gh", "<cmd>CodeDiff history<CR>", { desc = "CodeDiff history" })
+		vim.keymap.set("n", "<leader>gS", "<cmd>CodeDiff<CR>", { desc = "CodeDiff git status" })
+		vim.keymap.set("n", "<leader>gr", function()
+			local rev = vim.fn.input("Compare vs (HEAD, branch, hash): ", "HEAD")
+			if rev ~= "" then
+				vim.cmd("CodeDiff file " .. rev)
+			end
+		end, { desc = "CodeDiff vs revision" })
+
 		-- Help
 		vim.keymap.set("n", "<leader>eh", function()
 			vim.notify(
@@ -833,27 +880,31 @@ return {
 ║    ↑ (Up)     - Mergi la elementul de sus                 ║
 ║    ↓ (Down)   - Mergi la elementul de jos                 ║
 ║                                                           ║
-║  LINII DE INDENTARE:                                      ║
-║    │  - Linie verticală pentru ierarhie                   ║
-║    └  - Ultimul element din folder                        ║
-║                                                           ║
 ║  COMENZI RAPIDE:                                          ║
 ║    <leader>e   - Toggle explorer                          ║
 ║    <leader>ef  - Reveal current file                      ║
-║    <leader>d   - Diff between 2 files                     ║
+║    <leader>d   - CodeDiff între 2 fișiere                 ║
 ║    <leader>b   - Add bookmark                             ║
 ║    <leader>B   - Show bookmarks                           ║
-║    <C-m>       - Quick mark file                          ║
-║    <C-1..9>    - Open quick mark                          ║
 ║    <leader>f   - Fuzzy search                             ║
 ║    <leader>t   - Open terminal here                       ║
 ║    <leader>c   - Smart copy                               ║
 ║    <leader>m   - Smart move                               ║
-║    <leader>gb  - Git blame                                ║
-║    <leader>gd  - Git diff preview                         ║
+║                                                           ║
+║  CODEDIFF (VSCode-style):                                 ║
+║    <leader>gd  - Diff fișier vs HEAD                      ║
+║    <leader>gr  - Diff fișier vs orice revision            ║
+║    <leader>gh  - Git history (50 commits)                 ║
+║    <leader>gS  - CodeDiff git status explorer             ║
+║    <leader>gb  - Git blame (vim-fugitive)                 ║
+║    ]c / [c     - Next/prev change în diff                 ║
+║    ]f / [f     - Next/prev fișier în diff                 ║
+║    t           - Toggle layout (side-by-side/inline)      ║
+║    q           - Close diff / NeoTree                     ║
+║                                                           ║
+║  FILTER:                                                  ║
 ║    <C-f>       - Filter files                             ║
 ║    <C-x>       - Clear filter                             ║
-║    q           - Close NeoTree                            ║
 ╚════════════════════════════════════════════════════════════╝
 			]],
 				vim.log.levels.INFO,

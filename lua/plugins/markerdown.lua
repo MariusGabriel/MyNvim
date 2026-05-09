@@ -847,5 +847,70 @@ return {
 				-- @see [Custom Handlers](doc/custom-handlers.md)
 			},
 		})
+
+		-- Override RenderMarkdown highlights to match the-matrix warm palette
+		local rm_hl = {
+			-- Headings: amber > sage > steel-blue > terracotta > tan > muted-green
+			RenderMarkdownH1 = { fg = "#e8c46a", bold = true },
+			RenderMarkdownH2 = { fg = "#7ec8a0", bold = true },
+			RenderMarkdownH3 = { fg = "#7db5c8", bold = true },
+			RenderMarkdownH4 = { fg = "#c8956c", bold = true },
+			RenderMarkdownH5 = { fg = "#c8a87a", bold = true },
+			RenderMarkdownH6 = { fg = "#a0b890", bold = true },
+			-- Heading backgrounds: barely-visible tints matching each fg hue
+			RenderMarkdownH1Bg = { bg = "#1a1500" },
+			RenderMarkdownH2Bg = { bg = "#0d1a10" },
+			RenderMarkdownH3Bg = { bg = "#0d1218" },
+			RenderMarkdownH4Bg = { bg = "#1a100a" },
+			RenderMarkdownH5Bg = { bg = "#151008" },
+			RenderMarkdownH6Bg = { bg = "#101210" },
+			-- Code blocks
+			RenderMarkdownCode         = { bg = "#0d1a0d" },
+			RenderMarkdownCodeBorder   = { fg = "#4a6a4a", bg = "#0d1a0d" },
+			RenderMarkdownCodeInline   = { fg = "#c8956c", bg = "#1a100a" },
+			RenderMarkdownCodeInfo     = { fg = "#7a9e78" },
+			RenderMarkdownCodeFallback = { fg = "#a0b890" },
+			-- Bullets & dash
+			RenderMarkdownBullet = { fg = "#7ec8a0" },
+			RenderMarkdownDash   = { fg = "#4a6a4a" },
+			-- Links
+			RenderMarkdownLink     = { fg = "#7db5c8" },
+			RenderMarkdownWikiLink = { fg = "#7db5c8", underline = true },
+			-- Callouts
+			RenderMarkdownInfo    = { fg = "#7db5c8", bold = true },
+			RenderMarkdownSuccess = { fg = "#7ec8a0", bold = true },
+			RenderMarkdownHint    = { fg = "#c8a87a", bold = true },
+			RenderMarkdownWarn    = { fg = "#e8c46a", bold = true },
+			RenderMarkdownError   = { fg = "#c86a5a", bold = true },
+			-- Block quotes (6 levels cycling theme hues)
+			RenderMarkdownQuote1 = { fg = "#7ec8a0" },
+			RenderMarkdownQuote2 = { fg = "#7db5c8" },
+			RenderMarkdownQuote3 = { fg = "#c8a87a" },
+			RenderMarkdownQuote4 = { fg = "#a0b890" },
+			RenderMarkdownQuote5 = { fg = "#b0c898" },
+			RenderMarkdownQuote6 = { fg = "#7a9e78" },
+			-- Tables
+			RenderMarkdownTableHead = { fg = "#e8c46a", bold = true },
+			RenderMarkdownTableRow  = { fg = "#d8c9a3" },
+			-- Checkboxes
+			RenderMarkdownUnchecked = { fg = "#c8956c" },
+			RenderMarkdownChecked   = { fg = "#7ec8a0" },
+			RenderMarkdownTodo      = { fg = "#c8a87a" },
+			-- Misc
+			RenderMarkdownSign            = { fg = "#4a6a4a" },
+			RenderMarkdownInlineHighlight = { bg = "#1e3020", fg = "#e8c46a" },
+			RenderMarkdownMath            = { fg = "#7db5c8" },
+			RenderMarkdownHtmlComment     = { fg = "#7a9e78", italic = true },
+			RenderMarkdownIndent          = { fg = "#4a6a4a" },
+		}
+
+		local function apply_rm_hl()
+			for group, hl in pairs(rm_hl) do
+				vim.api.nvim_set_hl(0, group, hl)
+			end
+		end
+
+		apply_rm_hl()
+		vim.api.nvim_create_autocmd("ColorScheme", { pattern = "*", callback = apply_rm_hl })
 	end,
 }
