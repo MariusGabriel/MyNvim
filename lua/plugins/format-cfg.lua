@@ -12,7 +12,7 @@ return {
 			-- You can customize some of the format options for the filetype (:help conform.format)
 			rust = { "rustfmt", lsp_format = "fallback" },
 			-- Conform will run the first available formatter
-			javascript = { "prettierd", "prettierd", stop_after_first = true },
+			javascript = { "prettierd", stop_after_first = true },
 			sql = { "sqlfmt" },
 			java = { "google-java-format", lsp_format = "fallback" },
 			json = { "prettier", "prettierd", lsp_format = "fallback" },

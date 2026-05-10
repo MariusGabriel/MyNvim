@@ -1,17 +1,18 @@
 return {
 	"numToStr/Comment.nvim",
 	enabled = true,
-	lazy = true,
 	event = "VeryLazy",
 	dependencies = {
 		"JoosepAlviste/nvim-ts-context-commentstring",
 	},
 	config = function()
 		require("ts_context_commentstring").setup({
-			enable_autocmd = true,
+			enable_autocmd = false,
 		})
 
-		require("Comment").setup({})
+		require("Comment").setup({
+			pre_hook = require("ts_context_commentstring.integrations.comment_nvim").create_pre_hook(),
+		})
 
 		-- Setează commentstring pentru toate shell-urile
 		vim.api.nvim_create_autocmd("FileType", {

@@ -4,24 +4,28 @@ return {
 	config = function()
 		require("undotree").setup({
 			float_diff = true,
-			layout = "right_bottom", -- ← dreapta ca sa nu se bata cu neo-tree
+			layout = "left_bottom",
 			position = "right",
 			ignore_filetype = {
 				"undotree",
 				"undotreeDiff",
-				"neo-tree", -- ← ignora neo-tree
+				"neo-tree",
 			},
 			window = {
-				winblend = 0,
+				width = 0.3,
+				height = 0.3,
+				border = "rounded",
 			},
 			keymaps = {
-				["j"] = "move_next",
-				["k"] = "move_prev",
-				["J"] = "move_change_next",
-				["K"] = "move_change_prev",
-				["<cr>"] = "action_enter",
-				["p"] = "enter_diffbuf",
-				["q"] = "quit",
+				["move_next"] = "j",
+				["move_prev"] = "k",
+				["move2parent"] = "gj",
+				["move_change_next"] = "J",
+				["move_change_prev"] = "K",
+				["action_enter"] = "<cr>",
+				["enter_diffbuf"] = "p",
+				["quit"] = "q",
+				["update_undotree_view"] = "S",
 			},
 		})
 
