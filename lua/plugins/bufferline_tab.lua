@@ -31,14 +31,22 @@ return {
 		end
 
 		-- ─────────────────────────────────────────────
-		-- BUFFERLINE SETUP (ROTUNJIT ȘI SIMPLU)
+		-- PATCH: înlocuiește triunghiurile slant cu E0B6/E0B4 (identic lualine)
+		-- ─────────────────────────────────────────────
+		local ok_const, constants = pcall(require, "bufferline.constants")
+		if ok_const then
+			-- chars[1] = right_sep (marginea dreaptă), chars[2] = left_sep (marginea stângă)
+			constants.sep_chars.slant = { "\xee\x82\xb4", "\xee\x82\xb6" }
+		end
+
+		-- ─────────────────────────────────────────────
+		-- BUFFERLINE SETUP
 		-- ─────────────────────────────────────────────
 		require("bufferline").setup({
 			highlights = {
-				-- Selected: matrix green bg, white text
 				buffer_selected = {
-					fg = "#ffffff",
-					bg = "#63c263",
+					fg = "#0d1a0d",
+					bg = "#6bc87a",
 					bold = true,
 				},
 				-- Visible (split focus): lifted bg, sage text
@@ -51,10 +59,9 @@ return {
 					fg = "#4a6a4a",
 					bg = "#0a140a",
 				},
-				-- Indicator: green pill on green bg (blends nicely)
 				indicator_selected = {
-					fg = "#4aaa4a",
-					bg = "#63c263",
+					fg = "#6bc87a",
+					bg = "#6bc87a",
 				},
 				indicator_visible = {
 					fg = "#2a4a2a",
@@ -66,8 +73,8 @@ return {
 					bg = "#0a140a",
 				},
 				modified_selected = {
-					fg = "#ffffff",
-					bg = "#63c263",
+					fg = "#0d1a0d",
+					bg = "#6bc87a",
 				},
 				modified_visible = {
 					fg = "#c8a84a",
@@ -79,24 +86,26 @@ return {
 					bg = "#0a140a",
 				},
 				close_button_selected = {
-					fg = "#ffffff",
-					bg = "#63c263",
+					fg = "#0d1a0d",
+					bg = "#6bc87a",
 				},
 				close_button_visible = {
 					fg = "#3a5a3a",
 					bg = "#111f11",
 				},
 				-- Rounded capsule edges: fg = tab bg (draws the curve), bg = fill gutter
+				-- Inactive: invisible (fg = fill bg → no shadow)
 				separator = {
-					fg = "#0a140a",
+					fg = "#060e06",
 					bg = "#060e06",
 				},
+				-- Selected: fg = tab bg → creates rounded capsule edges
 				separator_selected = {
-					fg = "#63c263",
+					fg = "#6bc87a",
 					bg = "#060e06",
 				},
 				separator_visible = {
-					fg = "#111f11",
+					fg = "#060e06",
 					bg = "#060e06",
 				},
 				-- Tabs
@@ -105,8 +114,8 @@ return {
 					bg = "#0a140a",
 				},
 				tab_selected = {
-					fg = "#0a1a0a",
-					bg = "#63c263",
+					fg = "#0d1a0d",
+					bg = "#6bc87a",
 					bold = true,
 				},
 				tab_close = {
@@ -120,8 +129,8 @@ return {
 					italic = true,
 				},
 				duplicate_selected = {
-					fg = "#0a1a0a",
-					bg = "#7ec8a0",
+					fg = "#0d1a0d",
+					bg = "#6bc87a",
 					italic = true,
 				},
 				duplicate_visible = {
@@ -131,10 +140,10 @@ return {
 				},
 				-- Diagnostics (matches DiagnosticVirtualText* palette)
 				error = { fg = "#c86a5a", bg = "#0a140a" },
-				error_selected = { fg = "#7a1a0a", bg = "#7ec8a0", bold = true },
+				error_selected = { fg = "#8b0000", bg = "#6bc87a", bold = true },
 				error_visible = { fg = "#a85a4a", bg = "#111f11" },
 				warning = { fg = "#c8a84a", bg = "#0a140a" },
-				warning_selected = { fg = "#3a2a00", bg = "#7ec8a0", bold = true },
+				warning_selected = { fg = "#4a3000", bg = "#6bc87a", bold = true },
 				warning_visible = { fg = "#a8884a", bg = "#111f11" },
 				-- Fill: darkest layer — the empty tabline gutter
 				fill = {
@@ -157,10 +166,8 @@ return {
 				left_mouse_command = "buffer %d",
 				middle_mouse_command = "bdelete! %d",
 
-				-- Design rotunjit
 				indicator = {
-					icon = "●",
-					style = "icon",
+					style = "none",
 				},
 
 				-- Icoane simple
@@ -175,7 +182,7 @@ return {
 					local name = buf.name
 					local pinned = pinned_buffers[buf.bufnr] and " " or ""
 					local modified = vim.bo[buf.bufnr].modified and "● " or ""
-					return pinned .. modified .. name
+					return " " .. pinned .. modified .. name .. " "
 				end,
 
 				max_name_length = 30,
@@ -206,8 +213,8 @@ return {
 					},
 				},
 
-				-- Separator rotunjit (capsulă, la fel ca lualine)
-				separator_style = { "", "" },
+				-- slant dă ambele margini (stânga + dreapta) pentru tab-ul selectat
+				separator_style = "slant",
 				always_show_bufferline = true,
 				auto_toggle_bufferline = true,
 				show_buffer_icons = true,
@@ -238,6 +245,55 @@ return {
 				end,
 			},
 		})
+
+		-- ─────────────────────────────────────────────
+		-- MODE-BASED COLORS
+		-- ─────────────────────────────────────────────
+		-- Culori identice cu lualine (lua_line.lua)
+		local mode_colors = {
+			n  = { fg = "#0d1a0d", bg = "#6bc87a" }, -- NORMAL:  verde lualine
+			i  = { fg = "#0d1a0d", bg = "#e8c46a" }, -- INSERT:  chihlimbar lualine
+			v  = { fg = "#0d1a0d", bg = "#b07fd4" }, -- VISUAL:  violet lualine
+			V  = { fg = "#0d1a0d", bg = "#b07fd4" }, -- V-LINE:  violet
+			s  = { fg = "#0d1a0d", bg = "#b07fd4" }, -- SELECT:  violet
+			R  = { fg = "#0d1a0d", bg = "#c86a5a" }, -- REPLACE: roșu lualine
+			c  = { fg = "#0d1a0d", bg = "#7db5c8" }, -- COMMAND: teal lualine
+			t  = { fg = "#0d1a0d", bg = "#6bc87a" }, -- TERMINAL: verde (ca normal)
+		}
+		-- V-BLOCK (Ctrl+V) → cheia e caracterul ASCII 22
+		mode_colors["\22"] = mode_colors.v
+
+		local function update_mode_colors()
+			local raw = vim.api.nvim_get_mode().mode
+			local m = mode_colors[raw] or mode_colors[raw:sub(1, 1)] or mode_colors.n
+			local bg_num = tonumber(m.bg:sub(2), 16)
+
+			vim.api.nvim_set_hl(0, "BufferLineBufferSelected",      { fg = m.fg, bg = m.bg, bold = true })
+			vim.api.nvim_set_hl(0, "BufferLineIndicatorSelected",   { fg = m.bg, bg = m.bg })
+			vim.api.nvim_set_hl(0, "BufferLineModifiedSelected",    { fg = "#0d1a0d", bg = m.bg })
+			vim.api.nvim_set_hl(0, "BufferLineCloseButtonSelected", { fg = m.fg, bg = m.bg })
+			vim.api.nvim_set_hl(0, "BufferLineTabSelected",         { fg = m.fg, bg = m.bg, bold = true })
+			vim.api.nvim_set_hl(0, "BufferLineDuplicateSelected",   { fg = m.fg, bg = m.bg, italic = true })
+			vim.api.nvim_set_hl(0, "BufferLineSeparatorSelected",   { fg = m.bg, bg = "#060e06" })
+			vim.api.nvim_set_hl(0, "BufferLineSeparator",           { fg = "#060e06", bg = "#060e06" })
+			vim.api.nvim_set_hl(0, "BufferLineSeparatorVisible",    { fg = "#060e06", bg = "#060e06" })
+
+			-- DevIcon-urile sunt cachate cu bg-ul inițial — actualizare manuală la mod change
+			for _, hl_name in ipairs(vim.fn.getcompletion("BufferLineDevIcon", "highlight")) do
+				if hl_name:match("Selected$") then
+					local orig = vim.api.nvim_get_hl(0, { name = hl_name, link = false })
+					if orig and orig.fg then
+						vim.api.nvim_set_hl(0, hl_name, { fg = orig.fg, bg = bg_num })
+					end
+				end
+			end
+		end
+
+		vim.api.nvim_create_autocmd("ModeChanged", {
+			pattern  = "*",
+			callback = update_mode_colors,
+		})
+		update_mode_colors()
 
 		-- ─────────────────────────────────────────────
 		-- KEYMAPS SIMPLE
