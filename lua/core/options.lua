@@ -26,11 +26,11 @@ vim.loader.enable()
 -- line numbers
 opt.relativenumber = false -- show relative line numbers
 
--- Create an autocommand to reset highlights when colorscheme changes
 vim.api.nvim_create_autocmd("ColorScheme", {
 	pattern = "*",
 	callback = function()
 		vim.api.nvim_set_hl(0, "LineNr", { fg = "#FFD700" })
+		vim.api.nvim_set_hl(0, "CursorLineNr", { fg = "#FFD700", bold = true })
 	end,
 })
 
@@ -42,6 +42,12 @@ opt.fillchars = { eob = " " } -- remove tilda
 
 -- Enable mouse mode, can be useful for resizing splits for example!
 opt.mouse = "a"
+
+-- Prevent mouse scroll from falling through to terminal scrollback
+vim.keymap.set({ "n", "v" }, "<ScrollWheelUp>", "3<C-Y>", { noremap = true })
+vim.keymap.set({ "n", "v" }, "<ScrollWheelDown>", "3<C-E>", { noremap = true })
+vim.keymap.set("i", "<ScrollWheelUp>", "<C-O>3<C-Y>", { noremap = true })
+vim.keymap.set("i", "<ScrollWheelDown>", "<C-O>3<C-E>", { noremap = true })
 
 -- tabs & indentation
 opt.tabstop = 4 -- 4 spaces for tabs (prettier default)
@@ -86,8 +92,8 @@ opt.confirm = true
 
 -- turn on termguicolors for nightfly colorscheme to work
 -- (have to use iterm2 or any other true color terminal)
-opt.termguicolors = true
-opt.background = "dark" -- colorschemes that can be light or dark will be made dark
+-- opt.termguicolors = true
+-- opt.background = "dark"
 
 -- backspace
 opt.backspace = "indent,eol,start" -- allow backspace on indent, end of line or insert mode start position

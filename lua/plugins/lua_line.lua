@@ -5,138 +5,70 @@ return {
 	dependencies = { "nvim-tree/nvim-web-devicons" },
 
 	config = function()
-		local warm_matrix = {
-			normal = {
-				a = { fg = "#0d1a0d", bg = "#6bc87a", gui = "bold" },
-				b = { fg = "#b8cca8", bg = "NONE" },
-				c = { fg = "#d8c9a3", bg = "NONE" },
-			},
-			insert = {
-				a = { fg = "#0d1a0d", bg = "#e8c46a", gui = "bold" },
-				b = { fg = "#b8cca8", bg = "NONE" },
-				c = { fg = "#d8c9a3", bg = "NONE" },
-			},
-			visual = {
-				a = { fg = "#0d1a0d", bg = "#b07fd4", gui = "bold" },
-				b = { fg = "#b8cca8", bg = "NONE" },
-				c = { fg = "#d8c9a3", bg = "NONE" },
-			},
-			replace = {
-				a = { fg = "#0d1a0d", bg = "#c86a5a", gui = "bold" },
-				b = { fg = "#b8cca8", bg = "NONE" },
-				c = { fg = "#d8c9a3", bg = "NONE" },
-			},
-			command = {
-				a = { fg = "#0d1a0d", bg = "#7db5c8", gui = "bold" },
-				b = { fg = "#b8cca8", bg = "NONE" },
-				c = { fg = "#d8c9a3", bg = "NONE" },
-			},
-			inactive = {
-				a = { fg = "#4a5a4a", bg = "NONE" },
-				b = { fg = "#4a5a4a", bg = "NONE" },
-				c = { fg = "#4a5a4a", bg = "NONE" },
-			},
+		-- south.nvim palette
+		local od = {
+			bg      = "#fcfcfd", -- background (text on mode color)
+			bg_dark = "#edf2fd", -- darker_background
+			bg_mid  = "#e4eaf3", -- cool_light_grey
+			bg_c    = "#edf2fd",
+			fg      = "#323b45", -- black
+			fg_dim  = "#9097a6", -- cool_dark_grey
+			green   = "#2b9728", -- grass    / normal
+			cyan    = "#0092bf", -- aqua     / insert
+			lavender= "#615FB9", -- purple   / visual
+			red     = "#c1293d", -- auburn   / replace
+			amber   = "#d99610", -- gold     / command
 		}
 
-		local function get_mode_color()
-			local mode_colors = {
-				n = "#6bc87a",
-				i = "#e8c46a",
-				v = "#b07fd4",
-				V = "#b07fd4",
-				["\22"] = "#b07fd4",
-				R = "#c86a5a",
-				c = "#7db5c8",
-			}
-			return mode_colors[vim.fn.mode()] or "#6bc87a"
-		end
-
-		local function get_right_color()
-			local right_colors = {
-				n = "#6bc87a",
-				i = "#e8c46a",
-				v = "#b07fd4",
-				V = "#b07fd4",
-				["\22"] = "#b07fd4",
-				R = "#c86a5a",
-				c = "#7db5c8",
-			}
-			return right_colors[vim.fn.mode()] or "#6bc87a"
-		end
+		local south_theme = {
+			normal = {
+				a = { fg = od.bg, bg = od.green,    gui = "bold" },
+				b = { fg = od.fg, bg = od.bg_mid },
+				c = { fg = od.fg, bg = od.bg_c },
+			},
+			insert = {
+				a = { fg = od.bg, bg = od.cyan,     gui = "bold" },
+				b = { fg = od.fg, bg = od.bg_mid },
+				c = { fg = od.fg, bg = od.bg_c },
+			},
+			visual = {
+				a = { fg = od.bg, bg = od.lavender, gui = "bold" },
+				b = { fg = od.fg, bg = od.bg_mid },
+				c = { fg = od.fg, bg = od.bg_c },
+			},
+			replace = {
+				a = { fg = od.bg, bg = od.red,      gui = "bold" },
+				b = { fg = od.fg, bg = od.bg_mid },
+				c = { fg = od.fg, bg = od.bg_c },
+			},
+			command = {
+				a = { fg = od.bg, bg = od.amber,    gui = "bold" },
+				b = { fg = od.fg, bg = od.bg_mid },
+				c = { fg = od.fg, bg = od.bg_c },
+			},
+			inactive = {
+				a = { fg = od.fg_dim, bg = od.bg_dark },
+				b = { fg = od.fg_dim, bg = od.bg_dark },
+				c = { fg = od.fg_dim, bg = od.bg_dark },
+			},
+		}
 
 		require("lualine").setup({
 			options = {
 				icons_enabled = true,
-				theme = warm_matrix,
-				component_separators = { left = "│", right = "│" },
-				section_separators = { left = "│", right = "│" },
-				disabled_filetypes = {
-					statusline = {},
-					winbar = {},
-				},
-				ignore_focus = {},
+				theme = south_theme,
+				component_separators = { left = "", right = "" },
+				section_separators = { left = "", right = "" },
+				disabled_filetypes = { statusline = {}, winbar = {} },
 				always_divide_middle = true,
 				always_show_tabline = true,
 				globalstatus = false,
-				refresh = {
-					statusline = 1000,
-					winbar = 1000,
-				},
+				refresh = { statusline = 1000, winbar = 1000 },
 			},
 
 			sections = {
-				lualine_a = {
-					{
-						function()
-							return "╰"
-						end,
-						color = { fg = "#4a5a4a", bg = "NONE" },
-						padding = 0,
-						separator = { left = "", right = "" },
-					},
-					{
-						function()
-							return ""
-						end,
-						color = function()
-							return { fg = get_mode_color(), bg = "NONE" }
-						end,
-						padding = 0,
-						separator = { left = "", right = "" },
-					},
-					{
-						"mode",
-						color = function()
-							return { fg = "#0d1a0d", bg = get_mode_color(), gui = "bold" }
-						end,
-						padding = { left = 1, right = 1 },
-						separator = { left = "", right = "" },
-					},
-					{
-						function()
-							return ""
-						end,
-						color = function()
-							return { fg = get_mode_color(), bg = "NONE" }
-						end,
-						padding = 0,
-						separator = { left = "", right = "" },
-					},
-				},
-
-				lualine_b = {
-					{
-						function()
-							return "│"
-						end,
-						color = { fg = "#6bc87a" },
-						padding = { left = 1, right = 1 },
-						separator = { left = "", right = "" },
-					},
-					"branch",
-					"diff",
-					"diagnostics",
-				},
+				lualine_a = { "mode" },
+				lualine_b = { "branch", "diff", "diagnostics" },
 				lualine_c = {
 					"filename",
 					{
@@ -169,7 +101,7 @@ return {
 							vim.b[bufnr]._harpoon_lualine = result
 							return result
 						end,
-						color = { fg = "#b8cca8" },
+						color = { fg = "#499794" },
 					},
 				},
 				lualine_x = {
@@ -184,92 +116,24 @@ return {
 						cond = function()
 							return vim.g.screenkey_statusline_component == true
 						end,
-						color = { fg = "#e8c46a" },
+						color = { fg = "#499794" },
 					},
 					{
 						require("noice").api.status.mode.get,
 						cond = require("noice").api.status.mode.has,
-						color = { fg = "#c8956c" },
+						color = { fg = "#d99610" },
 					},
 					{
 						require("noice").api.status.search.get,
 						cond = require("noice").api.status.search.has,
-						color = { fg = "#c8956c" },
+						color = { fg = "#d99610" },
 					},
-
 					"encoding",
 					"fileformat",
 					"filetype",
 				},
-				-- lualine_x = { "encoding", "fileformat", "filetype" },
-				lualine_y = {
-					{
-						function()
-							return ""
-						end,
-						color = function()
-							return { fg = get_right_color(), bg = "NONE" }
-						end,
-						padding = 0,
-						separator = { left = "", right = "" },
-					},
-					{
-						"progress",
-						color = function()
-							return { fg = "#0d1a0d", bg = get_right_color(), gui = "bold" }
-						end,
-						padding = { left = 1, right = 1 },
-						separator = { left = "", right = "" },
-					},
-					{
-						function()
-							return ""
-						end,
-						color = function()
-							return { fg = get_right_color(), bg = "NONE" }
-						end,
-						padding = 0,
-						separator = { left = "", right = "" },
-					},
-				},
-				lualine_z = {
-					{
-						function()
-							return ""
-						end,
-						color = function()
-							return { fg = get_right_color(), bg = "NONE" }
-						end,
-						padding = 0,
-						separator = { left = "", right = "" },
-					},
-					{
-						"location",
-						color = function()
-							return { fg = "#0d1a0d", bg = get_right_color(), gui = "bold" }
-						end,
-						padding = { left = 1, right = 1 },
-						separator = { left = "", right = "" },
-					},
-					{
-						function()
-							return ""
-						end,
-						color = function()
-							return { fg = get_right_color(), bg = "NONE" }
-						end,
-						padding = 0,
-						separator = { left = "", right = "" },
-					},
-					{
-						function()
-							return "╯"
-						end,
-						color = { fg = "#4a5a4a", bg = "NONE" },
-						padding = 0,
-						separator = { left = "", right = "" },
-					},
-				},
+				lualine_y = { "progress" },
+				lualine_z = { "location" },
 			},
 			inactive_sections = {
 				lualine_a = {},
@@ -285,7 +149,6 @@ return {
 			extensions = {},
 		})
 
-		-- Invalidate harpoon lualine cache on buffer entry so position updates
 		vim.api.nvim_create_autocmd("BufEnter", {
 			callback = function(ev)
 				vim.b[ev.buf]._harpoon_lualine = nil

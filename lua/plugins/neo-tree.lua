@@ -830,6 +830,18 @@ return {
 			},
 		})
 
+		-- Single-click to open in neo-tree (bypass neo-tree mapping system for mouse)
+		vim.api.nvim_create_autocmd("FileType", {
+			pattern = "neo-tree",
+			callback = function(event)
+				vim.keymap.set("n", "<LeftRelease>", function()
+					vim.api.nvim_feedkeys(
+						vim.api.nvim_replace_termcodes("<CR>", true, true, true), "n", false
+					)
+				end, { buffer = event.buf, noremap = true, nowait = true })
+			end,
+		})
+
 		-- Patch get_state to guard against nil source_name (nui WinClosed race)
 		local manager = require("neo-tree.sources.manager")
 		local _orig_get_state = manager.get_state

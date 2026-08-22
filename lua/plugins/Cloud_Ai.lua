@@ -9,7 +9,20 @@ return {
 				split = { width = 60 },
 			},
 			tools = {
-				claude = {}, -- folosește config-ul default din sidekick
+				claude = {
+					cmd = {
+						"claude",
+						"--append-system-prompt",
+						table.concat({
+							"You are a pragmatic dev assistant embedded in Neovim.",
+							"Be direct and terse — skip pleasantries and filler.",
+							"When writing Lua for Neovim configs: use idiomatic patterns (vim.keymap.set, vim.api.*, lazy.nvim specs, snacks.nvim).",
+							"Prefer minimal, clean solutions. No boilerplate explanations.",
+							"When asked to fix/refactor code, show only the relevant changed parts, not the whole file.",
+							"Default to no comments unless the logic is genuinely non-obvious.",
+						}, " "),
+					},
+				},
 			},
 		},
 	},
