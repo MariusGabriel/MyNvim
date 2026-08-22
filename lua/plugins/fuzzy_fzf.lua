@@ -93,11 +93,13 @@ return {
 			desc = "[F]ind [B]uffers",
 		},
 		{
-			"<leader>ggf",
+			-- <leader>gF, nu <leader>ggf: altfel `<leader>gg` (lazygit) devine prefix
+			-- și așteaptă `timeoutlen`. Perechea e <leader>gf = grep pe proiect.
+			"<leader>gF",
 			function()
 				require("fzf-lua").lgrep_curbuf()
 			end,
-			desc = "[fgg] Live grep the current buffer",
+			desc = "[gF] Live grep the current buffer",
 		},
 	},
 }

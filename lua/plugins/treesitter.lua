@@ -1,14 +1,19 @@
 return {
 	"nvim-treesitter/nvim-treesitter",
+	-- Fixat pe `master`. Pe `main` (rescrierea) setup() acceptă doar `install_dir`,
+	-- iar ensure_installed / highlight / indent sunt ignorate în tăcere — de-aia
+	-- nu se instala niciun parser.
+	branch = "master",
 	event = { "BufReadPre", "BufNewFile" },
-	build = "TSUpdate", -- ":TSInstallFromGrammar", --- ":TSUpdate",
+	build = ":TSUpdate",
 
 	dependencies = {
 		"windwp/nvim-ts-autotag",
 	},
 	config = function()
-		-- import nvim-treesitter plugin
-		local treesitter = require("nvim-treesitter")
+		-- `nvim-treesitter.configs`, nu `nvim-treesitter`: pe master, setup() din
+		-- modulul principal nu primește argumente, doar înregistrează comenzile.
+		local treesitter = require("nvim-treesitter.configs")
 
 		-- configure treesitter
 		treesitter.setup({ -- enable syntax highlighting

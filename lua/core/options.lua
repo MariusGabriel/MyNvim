@@ -81,7 +81,10 @@ opt.signcolumn = "yes"
 -- Decrease update time
 opt.updatetime = 250
 
--- Decrease mapped sequence wait time opt.timeoutlen = 300
+-- Decrease mapped sequence wait time
+-- (contează la <leader>e, <leader>h, <leader>gg — taste care sunt și prefix
+-- pentru altele, deci nvim așteaptă atâta înainte să le declanșeze)
+opt.timeoutlen = 300
 
 -- cursor line
 opt.cursorline = true -- highlight the current cursor line

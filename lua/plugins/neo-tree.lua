@@ -855,7 +855,9 @@ return {
 		-- ─────────────────────────────────────────────
 		-- KEYMAPS GLOBALE
 		-- ─────────────────────────────────────────────
-		vim.keymap.set("n", "<leader>e", "<cmd>Neotree toggle<CR>", { desc = "Toggle explorer" })
+		-- <leader>ee, nu <leader>e: `e` e prefix pentru es/eb/ef/eg/eh/er, iar o
+		-- acțiune legată direct pe prefix ar aștepta `timeoutlen` la fiecare apăsare.
+		vim.keymap.set("n", "<leader>ee", "<cmd>Neotree toggle<CR>", { desc = "Toggle explorer" })
 		vim.keymap.set("n", "<leader>E", "<cmd>Neotree close<CR>", { desc = "Close explorer" })
 		vim.keymap.set("n", "<leader>ef", safe_reveal, { desc = "Reveal current file" })
 		vim.keymap.set("n", "<leader>eg", "<cmd>Neotree git_status<CR>", { desc = "Git status" })

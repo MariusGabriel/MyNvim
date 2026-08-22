@@ -13,8 +13,9 @@ return {
 			},
 		})
 
-		-- Adaugă fișierul curent
-		vim.keymap.set("n", "<leader>h", function()
+		-- Adaugă fișierul curent. <leader>ha, nu <leader>h: `h` e prefix pentru
+		-- hc/hr, iar pe prefix acțiunea ar aștepta `timeoutlen`.
+		vim.keymap.set("n", "<leader>ha", function()
 			harpoon:list():add()
 		end, { desc = "Harpoon: add file" })
 
