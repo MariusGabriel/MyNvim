@@ -17,35 +17,36 @@ return {
 			vim.cmd("redrawtabline")
 		end
 
-		-- south.nvim palette (matches lua_line.lua)
+		-- Maple Dark palette (identică cu lua_line.lua și colors/maple-dark.lua)
+		local transparent = vim.g.maple_dark_transparent == true
 		local C = {
-			fill    = "#edf2fd", -- darker_background
-			active  = "#e4eaf3", -- cool_light_grey
-			inactive= "#edf2fd",
-			text_a  = "#323b45", -- black
-			text_i  = "#9097a6", -- cool_dark_grey
-			text_on = "#fcfcfd", -- text on mode color
-			sep     = "#e4eaf3",
-			mod     = "#d99610", -- gold
-			err     = "#c1293d", -- auburn
-			warn    = "#d99610",
-			accent  = "#2b9728", -- grass
+			fill    = transparent and "NONE" or "#171718", -- fundalul barei
+			active  = "#232a39", -- surface, bufferul selectat
+			inactive= transparent and "NONE" or "#171718",
+			text_a  = "#cbd5e1",
+			text_i  = "#94a3b8",
+			text_on = "#1e1e1f", -- text pe culoarea de mod (pastel -> text închis)
+			sep     = "#232a39",
+			mod     = "#eecfa0", -- yellow
+			err     = "#edabab", -- red
+			warn    = "#eecfa0",
+			accent  = "#a4dfae", -- green
 		}
 
 		local mode_colors = {
-			n  = "#2b9728", -- grass
-			i  = "#0092bf", -- aqua
-			v  = "#615FB9", -- purple
-			V  = "#615FB9",
-			["\22"] = "#615FB9",
-			R  = "#c1293d", -- auburn
-			c  = "#d99610", -- gold
-			t  = "#0092bf",
+			n  = "#a4dfae", -- green
+			i  = "#8fc7ff", -- blue
+			v  = "#d2ccff", -- purple
+			V  = "#d2ccff",
+			["\22"] = "#d2ccff",
+			R  = "#edabab", -- red
+			c  = "#eecfa0", -- yellow
+			t  = "#8fc7ff",
 		}
 
 		local function update_hl()
 			local m = vim.api.nvim_get_mode().mode
-			local bg = mode_colors[m:sub(1, 1)] or "#1D5AB5"
+			local bg = mode_colors[m:sub(1, 1)] or "#8fc7ff"
 			vim.api.nvim_set_hl(0, "BufferLineBufferSelected",      { fg = C.text_on, bg = bg, bold = true })
 			vim.api.nvim_set_hl(0, "BufferLineTabSelected",         { fg = C.text_on, bg = bg, bold = true })
 			vim.api.nvim_set_hl(0, "BufferLineIndicatorSelected",   { fg = bg, bg = bg })
@@ -75,7 +76,7 @@ return {
 				modified_selected   = { fg = C.mod, bg = C.active },
 				modified_visible    = { fg = C.mod, bg = C.inactive },
 				close_button        = { fg = C.text_i, bg = C.inactive },
-				close_button_selected = { fg = C.text_on, bg = C.active },
+				close_button_selected = { fg = C.text_a, bg = C.active },
 				close_button_visible = { fg = C.text_i, bg = C.inactive },
 				separator           = { fg = C.inactive, bg = C.fill },
 				separator_selected  = { fg = C.active, bg = C.fill },

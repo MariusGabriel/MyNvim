@@ -456,7 +456,7 @@ local _matrix = {
 }
 local _ = _matrix
 
-return {
+local _south = {
 	"arnauKL/south.nvim",
 	lazy = false,
 	priority = 1000,
@@ -493,6 +493,21 @@ return {
 		vim.g.terminal_color_14 = "#0092bf"
 		vim.g.terminal_color_7  = "#b5bac4" -- white
 		vim.g.terminal_color_15 = "#e4eaf3"
+	end,
+}
+local _ = _south
+
+-- Maple (dark). Colorschema locală: colors/maple-dark.lua. `dir` o expune lazy-ului
+-- doar ca să obținem un config hook cu priority 1000, nu ca plugin instalabil.
+return {
+	dir = vim.fn.stdpath("config"),
+	name = "maple-dark",
+	lazy = false,
+	priority = 1000,
+	config = function()
+		vim.o.termguicolors = true
+		-- Comutatorul de transparență: vim.g.maple_dark_transparent, în lua/core/options.lua
+		vim.cmd.colorscheme("maple-dark")
 	end,
 }
 -- return {

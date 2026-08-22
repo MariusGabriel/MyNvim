@@ -5,22 +5,24 @@ return {
 	dependencies = { "nvim-tree/nvim-web-devicons" },
 
 	config = function()
-		-- south.nvim palette
+		-- Maple Dark palette (identică cu colors/maple-dark.lua)
+		-- Culorile de mod sunt pastelate, deci textul de deasupra e închis, nu alb.
+		local transparent = vim.g.maple_dark_transparent == true
 		local od = {
-			bg      = "#fcfcfd", -- background (text on mode color)
-			bg_dark = "#edf2fd", -- darker_background
-			bg_mid  = "#e4eaf3", -- cool_light_grey
-			bg_c    = "#edf2fd",
-			fg      = "#323b45", -- black
-			fg_dim  = "#9097a6", -- cool_dark_grey
-			green   = "#2b9728", -- grass    / normal
-			cyan    = "#0092bf", -- aqua     / insert
-			lavender= "#615FB9", -- purple   / visual
-			red     = "#c1293d", -- auburn   / replace
-			amber   = "#d99610", -- gold     / command
+			bg      = "#1e1e1f", -- text pe culoarea de mod
+			bg_dark = transparent and "NONE" or "#171718", -- inactive
+			bg_mid  = "#232a39", -- surface / secțiunea b, rămâne opacă pentru contrast
+			bg_c    = transparent and "NONE" or "#1e1e1f", -- secțiunea c
+			fg      = "#cbd5e1",
+			fg_dim  = "#94a3b8",
+			green   = "#a4dfae", -- normal
+			cyan    = "#8fc7ff", -- insert
+			lavender= "#d2ccff", -- visual
+			red     = "#edabab", -- replace
+			amber   = "#eecfa0", -- command
 		}
 
-		local south_theme = {
+		local maple_theme = {
 			normal = {
 				a = { fg = od.bg, bg = od.green,    gui = "bold" },
 				b = { fg = od.fg, bg = od.bg_mid },
@@ -56,7 +58,7 @@ return {
 		require("lualine").setup({
 			options = {
 				icons_enabled = true,
-				theme = south_theme,
+				theme = maple_theme,
 				component_separators = { left = "", right = "" },
 				section_separators = { left = "", right = "" },
 				disabled_filetypes = { statusline = {}, winbar = {} },
@@ -101,7 +103,7 @@ return {
 							vim.b[bufnr]._harpoon_lualine = result
 							return result
 						end,
-						color = { fg = "#499794" },
+						color = { fg = "#a1e8e5" },
 					},
 				},
 				lualine_x = {
@@ -116,17 +118,17 @@ return {
 						cond = function()
 							return vim.g.screenkey_statusline_component == true
 						end,
-						color = { fg = "#499794" },
+						color = { fg = "#a1e8e5" },
 					},
 					{
 						require("noice").api.status.mode.get,
 						cond = require("noice").api.status.mode.has,
-						color = { fg = "#d99610" },
+						color = { fg = "#eecfa0" },
 					},
 					{
 						require("noice").api.status.search.get,
 						cond = require("noice").api.status.search.has,
-						color = { fg = "#d99610" },
+						color = { fg = "#eecfa0" },
 					},
 					"encoding",
 					"fileformat",
