@@ -1,8 +1,8 @@
--- Transparență pentru tema maple-dark (colorschemă + bufferline + lualine).
+-- Transparență globală pentru UI (colorschemă + bufferline + lualine).
 -- Setat aici, nu în lua/plugins/color.lua, fiindcă `require("core")` rulează
 -- înaintea lui lazy — altfel plugin-urile ar putea citi flag-ul încă nesetat.
 -- `false` = fundal opac.
-vim.g.maple_dark_transparent = true
+vim.g.ui_transparent = false
 
 vim.cmd("let g:netrw_liststyle = 3")
 local opt = vim.opt -- for conciseness

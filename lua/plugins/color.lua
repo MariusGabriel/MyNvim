@@ -499,15 +499,74 @@ local _ = _south
 
 -- Maple (dark). Colorschema locală: colors/maple-dark.lua. `dir` o expune lazy-ului
 -- doar ca să obținem un config hook cu priority 1000, nu ca plugin instalabil.
-return {
+local _maple = {
 	dir = vim.fn.stdpath("config"),
 	name = "maple-dark",
 	lazy = false,
 	priority = 1000,
 	config = function()
 		vim.o.termguicolors = true
-		-- Comutatorul de transparență: vim.g.maple_dark_transparent, în lua/core/options.lua
 		vim.cmd.colorscheme("maple-dark")
+	end,
+}
+local _ = _maple
+
+-- Comutatorul de transparență: vim.g.ui_transparent, în lua/core/options.lua
+return {
+	"catppuccin/nvim",
+	name = "catppuccin",
+	lazy = false,
+	priority = 1000,
+	config = function()
+		vim.o.termguicolors = true
+		require("catppuccin").setup({
+			flavour = "frappe",
+			transparent_background = vim.g.ui_transparent == true,
+			term_colors = true,
+			styles = {
+				comments = { "italic" },
+				conditionals = { "italic" },
+			},
+			integrations = {
+				gitsigns = true,
+				harpoon = true,
+				indent_blankline = { enabled = true },
+				mason = true,
+				native_lsp = { enabled = true },
+				neotree = true,
+				noice = true,
+				notify = true,
+				treesitter = true,
+				which_key = true,
+				lsp_trouble = true,
+				fzf = true,
+				dap = true,
+				dap_ui = true,
+				-- bufferline lipsește intenționat: bufferline_tab.lua își setează
+				-- singur highlight-urile, în funcție de modul curent.
+			},
+			-- transparent_background golește și popup-urile. Peste imaginea de
+			-- fundal a terminalului devin ilizibile, deci le ținem opace.
+			custom_highlights = function(cp)
+				return {
+					Pmenu = { bg = cp.mantle },
+					PmenuSel = { bg = cp.surface1, bold = true },
+					PmenuSbar = { bg = cp.mantle },
+					PmenuThumb = { bg = cp.surface2 },
+					PmenuKind = { fg = cp.blue, bg = cp.mantle },
+					PmenuExtra = { fg = cp.subtext0, bg = cp.mantle },
+					NormalFloat = { bg = cp.mantle },
+					FloatBorder = { fg = cp.overlay0, bg = cp.mantle },
+					WhichKeyFloat = { bg = cp.mantle },
+					TelescopeNormal = { bg = cp.mantle },
+					TelescopeBorder = { fg = cp.overlay0, bg = cp.mantle },
+					FzfLuaNormal = { bg = cp.mantle },
+					FzfLuaBorder = { fg = cp.overlay0, bg = cp.mantle },
+					NoiceCmdlinePopup = { bg = cp.mantle },
+				}
+			end,
+		})
+		vim.cmd.colorscheme("catppuccin-frappe")
 	end,
 }
 -- return {

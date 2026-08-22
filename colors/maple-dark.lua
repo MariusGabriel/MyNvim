@@ -52,10 +52,10 @@ local c = {
 	diff_delete = "#715657",
 }
 
--- Cu `vim.g.maple_dark_transparent = true` zonele mari devin transparente, ca să
+-- Cu `vim.g.ui_transparent = true` zonele mari devin transparente, ca să
 -- se vadă fundalul terminalului. Popup-urile și floats rămân opace intenționat:
 -- peste o imagine de fundal, text pe transparent devine ilizibil.
-local transparent = vim.g.maple_dark_transparent == true
+local transparent = vim.g.ui_transparent == true
 local body = transparent and "NONE" or c.bg
 local bar = transparent and "NONE" or c.bg_dark
 

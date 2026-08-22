@@ -17,36 +17,36 @@ return {
 			vim.cmd("redrawtabline")
 		end
 
-		-- Maple Dark palette (identică cu lua_line.lua și colors/maple-dark.lua)
-		local transparent = vim.g.maple_dark_transparent == true
+		-- Catppuccin Frappé (identică cu lua_line.lua)
+		local transparent = vim.g.ui_transparent == true
 		local C = {
-			fill    = transparent and "NONE" or "#171718", -- fundalul barei
-			active  = "#232a39", -- surface, bufferul selectat
-			inactive= transparent and "NONE" or "#171718",
-			text_a  = "#cbd5e1",
-			text_i  = "#94a3b8",
-			text_on = "#1e1e1f", -- text pe culoarea de mod (pastel -> text închis)
-			sep     = "#232a39",
-			mod     = "#eecfa0", -- yellow
-			err     = "#edabab", -- red
-			warn    = "#eecfa0",
-			accent  = "#a4dfae", -- green
+			fill    = transparent and "NONE" or "#232634", -- crust
+			active  = "#414559", -- surface0, bufferul selectat
+			inactive= transparent and "NONE" or "#232634",
+			text_a  = "#c6d0f5", -- text
+			text_i  = "#a5adce", -- subtext0
+			text_on = "#303446", -- base: text pe culoarea de mod (pastel -> închis)
+			sep     = "#414559",
+			mod     = "#e5c890", -- yellow
+			err     = "#e78284", -- red
+			warn    = "#e5c890",
+			accent  = "#a6d189", -- green
 		}
 
 		local mode_colors = {
-			n  = "#a4dfae", -- green
-			i  = "#8fc7ff", -- blue
-			v  = "#d2ccff", -- purple
-			V  = "#d2ccff",
-			["\22"] = "#d2ccff",
-			R  = "#edabab", -- red
-			c  = "#eecfa0", -- yellow
-			t  = "#8fc7ff",
+			n  = "#8caaee", -- blue
+			i  = "#a6d189", -- green
+			v  = "#ca9ee6", -- mauve
+			V  = "#ca9ee6",
+			["\22"] = "#ca9ee6",
+			R  = "#e78284", -- red
+			c  = "#ef9f76", -- peach
+			t  = "#a6d189",
 		}
 
 		local function update_hl()
 			local m = vim.api.nvim_get_mode().mode
-			local bg = mode_colors[m:sub(1, 1)] or "#8fc7ff"
+			local bg = mode_colors[m:sub(1, 1)] or "#8caaee"
 			vim.api.nvim_set_hl(0, "BufferLineBufferSelected",      { fg = C.text_on, bg = bg, bold = true })
 			vim.api.nvim_set_hl(0, "BufferLineTabSelected",         { fg = C.text_on, bg = bg, bold = true })
 			vim.api.nvim_set_hl(0, "BufferLineIndicatorSelected",   { fg = bg, bg = bg })

@@ -5,24 +5,24 @@ return {
 	dependencies = { "nvim-tree/nvim-web-devicons" },
 
 	config = function()
-		-- Maple Dark palette (identică cu colors/maple-dark.lua)
-		-- Culorile de mod sunt pastelate, deci textul de deasupra e închis, nu alb.
-		local transparent = vim.g.maple_dark_transparent == true
+		-- Catppuccin Frappé. Accentele sunt pastelate, deci textul de pe culoarea
+		-- de mod e închis (base), nu deschis.
+		local transparent = vim.g.ui_transparent == true
 		local od = {
-			bg      = "#1e1e1f", -- text pe culoarea de mod
-			bg_dark = transparent and "NONE" or "#171718", -- inactive
-			bg_mid  = "#232a39", -- surface / secțiunea b, rămâne opacă pentru contrast
-			bg_c    = transparent and "NONE" or "#1e1e1f", -- secțiunea c
-			fg      = "#cbd5e1",
-			fg_dim  = "#94a3b8",
-			green   = "#a4dfae", -- normal
-			cyan    = "#8fc7ff", -- insert
-			lavender= "#d2ccff", -- visual
-			red     = "#edabab", -- replace
-			amber   = "#eecfa0", -- command
+			bg      = "#303446", -- base, text pe culoarea de mod
+			bg_dark = transparent and "NONE" or "#232634", -- crust, inactive
+			bg_mid  = transparent and "NONE" or "#414559", -- surface0, secțiunea b
+			bg_c    = transparent and "NONE" or "#292c3c", -- mantle, secțiunea c
+			fg      = "#c6d0f5", -- text
+			fg_dim  = "#a5adce", -- subtext0
+			green   = "#8caaee", -- blue    / normal
+			cyan    = "#a6d189", -- green   / insert
+			lavender= "#ca9ee6", -- mauve   / visual
+			red     = "#e78284", -- red     / replace
+			amber   = "#ef9f76", -- peach   / command
 		}
 
-		local maple_theme = {
+		local frappe_theme = {
 			normal = {
 				a = { fg = od.bg, bg = od.green,    gui = "bold" },
 				b = { fg = od.fg, bg = od.bg_mid },
@@ -58,7 +58,7 @@ return {
 		require("lualine").setup({
 			options = {
 				icons_enabled = true,
-				theme = maple_theme,
+				theme = frappe_theme,
 				component_separators = { left = "", right = "" },
 				section_separators = { left = "", right = "" },
 				disabled_filetypes = { statusline = {}, winbar = {} },
@@ -103,7 +103,7 @@ return {
 							vim.b[bufnr]._harpoon_lualine = result
 							return result
 						end,
-						color = { fg = "#a1e8e5" },
+						color = { fg = "#81c8be" },
 					},
 				},
 				lualine_x = {
@@ -118,17 +118,17 @@ return {
 						cond = function()
 							return vim.g.screenkey_statusline_component == true
 						end,
-						color = { fg = "#a1e8e5" },
+						color = { fg = "#81c8be" },
 					},
 					{
 						require("noice").api.status.mode.get,
 						cond = require("noice").api.status.mode.has,
-						color = { fg = "#eecfa0" },
+						color = { fg = "#e5c890" },
 					},
 					{
 						require("noice").api.status.search.get,
 						cond = require("noice").api.status.search.has,
-						color = { fg = "#eecfa0" },
+						color = { fg = "#e5c890" },
 					},
 					"encoding",
 					"fileformat",
