@@ -296,16 +296,14 @@ return {
 				},
 			},
 			lua_ls = {
-					settings = {
-						Lua = {
-							diagnostics = { globals = { "vim" } },
-							workspace = {
-								library = vim.api.nvim_get_runtime_file("", true),
-								checkThirdParty = false,
-							},
-						},
+				-- workspace.library il gestioneaza lazydev.nvim (lua/plugins/lazydev.lua),
+				-- la cerere. Nu adauga aici o lista statica: s-ar dubla munca.
+				settings = {
+					Lua = {
+						diagnostics = { globals = { "vim" } },
 					},
 				},
+			},
 			jdtls = {
 				-- Migrate din lua/ftplugin/java.lua (spec nvim-java, sters). Acolo stateau
 				-- sub opts.setup.jdtls, sintaxa LazyVim pe care configul asta nu o citeste,
