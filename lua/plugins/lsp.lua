@@ -321,29 +321,38 @@ return {
 		--
 		-- You can add other tools here that you want Mason to install
 		-- for you, so that they are available from within Neovim.
-		local ensure_installed = vim.tbl_keys(servers or {})
+		-- cheile din `servers` sunt nume lspconfig (lua_ls), mason-tool-installer
+		-- vrea nume de pachet mason (lua-language-server); traducem prin tabela
+		-- lui mason-lspconfig ca sa nu hardcodam corespondentele
+		local lspconfig_to_package = require("mason-lspconfig.mappings").get_mason_map().lspconfig_to_package
+		local ensure_installed = {}
+		for server_name in pairs(servers or {}) do
+			table.insert(ensure_installed, lspconfig_to_package[server_name] or server_name)
+		end
 		vim.list_extend(ensure_installed, {
 			"stylua", -- Used to format Lua code
 			"sqlfmt",
 			"prettierd",
 			"google-java-format",
 			"prettier",
-			"yaml-language-server",
 		})
 		require("mason-tool-installer").setup({ ensure_installed = ensure_installed })
+
+		-- capabilities pentru toate serverele (blink.cmp)
+		vim.lsp.config("*", { capabilities = capabilities })
+
+		-- suprascrierile din `servers` de mai sus; se merge peste definitiile
+		-- din nvim-lspconfig (cmd, root_markers, filetypes raman intacte)
+		for server_name, server_config in pairs(servers) do
+			vim.lsp.config(server_name, server_config)
+		end
 
 		require("mason-lspconfig").setup({
 			ensure_installed = {},
 			automatic_installation = false,
-			handlers = {
-				function(server_name)
-					local server = servers[server_name] or {}
-					server.capabilities = vim.tbl_deep_extend("force", {}, capabilities, server.capabilities or {})
-					require("lspconfig")[server_name].setup(server)
-				end,
-				-- jdtls is handled by nvim-java via ftplugin, skip it here
-				jdtls = function() end,
-			},
+			-- stylua e formatter pentru conform, nu LSP: altfel porneste `stylua --lsp`
+			-- pe fiecare buffer lua. jdtls e pornit de nvim-java din ftplugin/java.lua.
+			automatic_enable = { exclude = { "stylua", "jdtls" } },
 		})
 
 		-- ensure the java debug adapter is installed
