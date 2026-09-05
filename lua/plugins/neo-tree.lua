@@ -1,6 +1,11 @@
 return {
 	"nvim-neo-tree/neo-tree.nvim",
 	branch = "v3.x",
+	cmd = "Neotree",
+	-- siruri simple, nu perechi: lazy pune un stub pe tasta, incarca pluginul la
+	-- prima apasare si retrimite tasta. Asa raman valabile mapările din `config`
+	-- care folosesc functii locale (safe_reveal, show_quick_menu).
+	keys = { "<leader>ee", "<leader>E", "<leader>ef", "<leader>eg", "<leader>eb", "<leader>es", "<leader>er", "<leader>mf" },
 	dependencies = {
 		"nvim-lua/plenary.nvim",
 		"nvim-tree/nvim-web-devicons",

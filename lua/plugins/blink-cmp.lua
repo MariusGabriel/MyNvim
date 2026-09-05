@@ -11,6 +11,9 @@ return {
 
 	{
 		"saghen/blink.cmp",
+		-- in practica se incarca odata cu nvim-lspconfig, care cere
+		-- require("blink.cmp").get_lsp_capabilities() in config-ul lui
+		event = { "InsertEnter", "CmdlineEnter" },
 		-- optional: provides snippets for the snippet source
 
 		dependencies = {

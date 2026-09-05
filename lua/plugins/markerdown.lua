@@ -1,5 +1,6 @@
 return {
 	"MeanderingProgrammer/render-markdown.nvim",
+	ft = { "markdown" }, -- oglindeste file_types din setup()
 	dependencies = {
 		-- "nvim-treesitter/nvim-treesitter",
 

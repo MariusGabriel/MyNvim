@@ -1,6 +1,10 @@
 return {
 
 	"nvim-lualine/lualine.nvim",
+	-- VeryLazy: config-ul cere require("noice") pentru componentele de status,
+	-- iar noice e tot pe VeryLazy. Culorile sunt hexuri catppuccin hardcodate,
+	-- nu citite din highlight groups, deci momentul incarcarii nu le afecteaza.
+	event = "VeryLazy",
 
 	dependencies = { "nvim-tree/nvim-web-devicons" },
 

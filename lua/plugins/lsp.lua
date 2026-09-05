@@ -1,6 +1,7 @@
 return {
 	-- Main LSP Configuration
 	"neovim/nvim-lspconfig",
+	event = { "BufReadPre", "BufNewFile" },
 	dependencies = {
 		-- Automatically install LSPs and related tools to stdpath for Neovim
 		-- Mason must be loaded before its dependents so we need to set it up here.
@@ -305,7 +306,56 @@ return {
 						},
 					},
 				},
-			-- jdtls is handled by nvim-java (ftplugin/java.lua), not here
+			jdtls = {
+				-- Migrate din lua/ftplugin/java.lua (spec nvim-java, sters). Acolo stateau
+				-- sub opts.setup.jdtls, sintaxa LazyVim pe care configul asta nu o citeste,
+				-- deci nu s-au aplicat niciodata. Cheile sunt aceleasi ca la nvim-java,
+				-- doar ca traiesc sub settings.java.* al lui jdtls.
+				settings = {
+					java = {
+						eclipse = { downloadSources = true },
+						maven = { downloadSources = true },
+						configuration = {
+							updateBuildConfiguration = "interactive",
+							runtimes = {
+								{
+									name = "JavaSE-21",
+									path = "/Library/Java/JavaVirtualMachines/microsoft-21.jdk/Contents/Home",
+								},
+							},
+						},
+						implementationsCodeLens = { enabled = true },
+						referencesCodeLens = { enabled = true },
+						references = { includeDecompiledSources = true },
+						signatureHelp = { enabled = true },
+						format = { enabled = true },
+						completion = {
+							favoriteStaticMembers = {
+								"org.hamcrest.MatcherAssert.assertThat",
+								"org.hamcrest.Matchers.*",
+								"org.hamcrest.CoreMatchers.*",
+								"org.junit.jupiter.api.Assertions.*",
+								"java.util.Objects.requireNonNull",
+								"java.util.Objects.requireNonNullElse",
+								"org.mockito.Mockito.*",
+							},
+							importOrder = { "java", "javax", "com", "org" },
+						},
+						sources = {
+							organizeImports = {
+								starThreshold = 9999,
+								staticStarThreshold = 9999,
+							},
+						},
+						codeGeneration = {
+							toString = {
+								template = "${object.className}{${member.name()}=${member.value}, ${otherMembers}}",
+							},
+							useBlocks = true,
+						},
+					},
+				},
+			},
 		}
 
 		-- Ensure the servers and tools above are installed
@@ -351,8 +401,10 @@ return {
 			ensure_installed = {},
 			automatic_installation = false,
 			-- stylua e formatter pentru conform, nu LSP: altfel porneste `stylua --lsp`
-			-- pe fiecare buffer lua. jdtls e pornit de nvim-java din ftplugin/java.lua.
-			automatic_enable = { exclude = { "stylua", "jdtls" } },
+			-- pe fiecare buffer lua.
+			-- jdtls ramane activat: Java merge prin jdtls din nvim-lspconfig,
+			-- configurat in tabela `servers` de mai sus.
+			automatic_enable = { exclude = { "stylua" } },
 		})
 
 		-- ensure the java debug adapter is installed

@@ -2,7 +2,6 @@
 -- require("core.autocmds")
 require("core.keymaps")
 require("core.options")
-require("core.java")
 
 -- require("core.jdtls")
 -- require("core.autocmds")

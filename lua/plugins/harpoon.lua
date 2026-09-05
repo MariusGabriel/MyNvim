@@ -1,6 +1,7 @@
 return {
 	"ThePrimeagen/harpoon",
 	branch = "harpoon2",
+	event = "VeryLazy", -- keymap-urile se definesc in config, nu in spec
 	dependencies = { "nvim-lua/plenary.nvim" },
 	config = function()
 		local harpoon = require("harpoon")
